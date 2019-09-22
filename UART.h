@@ -9,7 +9,7 @@
 
 #define TIVA1 1
 #define TIVA2 2
-#define TIVA_TYPE TIVA2
+#define TIVA_TYPE TIVA1
 
 #if TIVA_TYPE == TIVA1
 
