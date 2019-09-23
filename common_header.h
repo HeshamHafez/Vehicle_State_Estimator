@@ -1,13 +1,23 @@
-/*
- * common_header.h
+/******************************************************************************
  *
- *  Created on: Sep 21, 2019
- *      Author: hesha
- */
+ * Module: Vehicle State Estimator
+ *
+ * File Name: Button.h
+ *
+ * Description: header file for Vehicle State Estimator drivers common headers
+ *
+ * Created on: Sep 22, 2019
+ *
+ * Author: Ahmed Eldakhly & Hesham Hafez
+ *
+ *******************************************************************************/
 
 #ifndef COMMON_HEADER_H_
 #define COMMON_HEADER_H_
 
+/*******************************************************************************
+ *                          Included Libraries                                 *
+ *******************************************************************************/
 #include <stdint.h>
 #include <stdbool.h>
 
