@@ -1,10 +1,33 @@
-
+/******************************************************************************
+ *
+ * Module: Vehicle State Estimator
+ *
+ * File Name: uart.c
+ *
+ * Description: source file for UART driver
+ *
+ * Created on: Sep 22, 2019
+ *
+ * Author: Ahmed Eldakhly & Hesham Hafez
+ *
+ *******************************************************************************/
+/*******************************************************************************
+ *                          Included Libraries                                 *
+ *******************************************************************************/
 #include "UART.h"
 
+/*tiva 1 code*/
 #if TIVA_TYPE == TIVA1
+/*******************************************************************************
+ *                      Global Variables for Tiva 1                            *
+ *******************************************************************************/
 volatile uint32_t speed=0;
 
+/*tiva 2 code*/
 #elif TIVA_TYPE == TIVA2
+/*******************************************************************************
+ *                      Global Variables for Tiva 1                            *
+ *******************************************************************************/
 volatile uint32_t Distance=0;
 volatile uint32_t OldSpeed=0;
 volatile uint32_t RecentSpeed=0;
@@ -12,18 +35,29 @@ volatile uint32_t OldTime=0;
 volatile uint32_t RecentTime=0;
 #endif
 
+/*******************************************************************************
+ *                      Functions Definitions                                  *
+ *******************************************************************************/
+/*******************************************************************************
+ * Function Name:   vUART_Init
+ *
+ * Description:     Initialize the UART Driver "UART0 & UART3"
+ *
+ * Inputs:          NULL
+ *
+ * Outputs:         NULL
+ *
+ * Return:          NULL
+ *******************************************************************************/
 void vUART_Init(void)
 {
-    /*
-     *
-     */
+    /*UART0 Init*/
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
     while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOA));
     GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
     UARTStdioConfig(0, 115200, SysCtlClockGet());
-    /*
-     *
-     */
+
+    /*UART3 Init*/
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
     while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOC));
     GPIOPinTypeUART(GPIO_PORTC_BASE, GPIO_PIN_6 | GPIO_PIN_7);
@@ -42,6 +76,17 @@ void vUART_Init(void)
 
 /*For tiva 1*/
 #if TIVA_TYPE == TIVA1
+/*******************************************************************************
+ * Function Name:   vUART_UART3Handler
+ *
+ * Description:     handle the interrupt service routine in the UART Driver "UART3"
+ *
+ * Inputs:          NULL
+ *
+ * Outputs:         NULL
+ *
+ * Return:          NULL
+ *******************************************************************************/
 void vUART_UART3Handler(void)
 {
     static uint8_t Startcheck = START_TIME;
@@ -58,8 +103,20 @@ void vUART_UART3Handler(void)
         Startcheck = START_TIME;
     }
 }
-#elif TIVA_TYPE == TIVA2
+
 /*for tiva 2*/
+#elif TIVA_TYPE == TIVA2
+/*******************************************************************************
+ * Function Name:   vUART_UART3Handler
+ *
+ * Description:     handle the interrupt service routine in the UART Driver "UART3"
+ *
+ * Inputs:          NULL
+ *
+ * Outputs:         NULL
+ *
+ * Return:          NULL
+ *******************************************************************************/
 void vUART_UART3Handler(void)
 {
 RecentTime = UARTCharGet (UART3_BASE);
