@@ -29,17 +29,19 @@ int main(void)
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
     while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOF));
     GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3);
-   volatile  uint8_t x=0;
+   volatile  uint8_t InitialTimeCounter = 0,InitialSpeedCounter = 0;
     vUART_Init();
     Button_Init();
-   // uint16_t j=1;
-    for( x=0; x<4 ; x++)
+    for(; InitialTimeCounter<4 ; InitialTimeCounter++)
     {
         time = ( (time *10) +   (UARTCharGet (UART0_BASE )-48));
-       // j=j*10;
     }
-
-    speed = UARTCharGet (UART0_BASE );
+    UARTprintf("Start Time: %d\n",time);
+    for(; InitialSpeedCounter<3 ; InitialSpeedCounter++)
+    {
+        speed = ( (speed *10) + (UARTCharGet (UART0_BASE )-48));
+    }
+    UARTprintf("Start Speed: %d\n",speed);
     Timer0_Init();
 
     while(1)
@@ -54,9 +56,6 @@ int main(void)
 {
     vUART_Init();
     Button_Init();
-    UARTCharPut(UART3_BASE, START_TIME);
-    OldTime = UARTCharGet (UART3_BASE );
-    OldSpeed = UARTCharGet (UART3_BASE );
     while(1)
     {
         Button_press();

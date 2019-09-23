@@ -16,6 +16,11 @@
  *******************************************************************************/
 #include "UART.h"
 
+/*******************************************************************************
+ *                           Global Variables                                  *
+ *******************************************************************************/
+volatile uint8_t TimeState = END_TIME;
+
 /*tiva 1 code*/
 #if TIVA_TYPE == TIVA1
 /*******************************************************************************
@@ -51,13 +56,12 @@ volatile uint32_t RecentTime=0;
  *******************************************************************************/
 void vUART_Init(void)
 {
-    /*UART0 Init*/
+
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
     while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOA));
     GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
     UARTStdioConfig(0, 115200, SysCtlClockGet());
 
-    /*UART3 Init*/
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
     while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOC));
     GPIOPinTypeUART(GPIO_PORTC_BASE, GPIO_PIN_6 | GPIO_PIN_7);
@@ -95,12 +99,15 @@ void vUART_UART3Handler(void)
         UARTCharPut(UART3_BASE, time);
         UARTCharPut(UART3_BASE, speed);
         Startcheck = END_TIME;
+        TimeState = START_TIME;
+
     }
     else if((Startcheck == END_TIME) && (UARTCharGet (UART3_BASE ) == END_TIME))
     {
         UARTCharPut(UART3_BASE, time);
         UARTCharPut(UART3_BASE, speed);
         Startcheck = START_TIME;
+        TimeState = END_TIME;
     }
 }
 
@@ -119,11 +126,23 @@ void vUART_UART3Handler(void)
  *******************************************************************************/
 void vUART_UART3Handler(void)
 {
-RecentTime = UARTCharGet (UART3_BASE);
-RecentSpeed = UARTCharGet (UART3_BASE );
-Distance += ((RecentTime-OldTime)*OldSpeed);
-OldSpeed = RecentSpeed;
-OldTime = RecentTime;
+    if(TimeState == END_TIME)
+    {
+        OldTime = UARTCharGet (UART3_BASE );
+        OldSpeed = UARTCharGet (UART3_BASE );
+        UARTprintf("Start Time to Measure: %d\n", OldTime);
+        UARTprintf("Start Speed to Measure: %d\n", OldSpeed);
+    }
+    else if(TimeState == START_TIME)
+    {
+        RecentTime = UARTCharGet (UART3_BASE);
+        RecentSpeed = UARTCharGet (UART3_BASE );
+        Distance += ((RecentTime-OldTime)*OldSpeed);
+        OldSpeed = RecentSpeed;
+        OldTime = RecentTime;
+        UARTprintf("Speed was changed to: %d\n", RecentSpeed);
+        UARTprintf("Distance till now: %d\n", Distance);
+    }
 }
 #endif
 

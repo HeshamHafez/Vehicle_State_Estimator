@@ -54,7 +54,6 @@ void Timer0_Init(void)
 
     TimerEnable(TIMER0_BASE, TIMER_A);
 }
-
 /*******************************************************************************
  * Function Name:   Timer0Handler
  *
@@ -73,4 +72,3 @@ void Timer0Handler(void)
     UARTprintf("%d\n", time);
     GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0xFF);
 }
-
